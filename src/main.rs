@@ -1,15 +1,14 @@
 use std::env;
-mod av_bv;
+mod lib;
+use lib::av_bv;
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    let param = &args[1];
-    let av = param.parse::<u64>();
-    if av.is_err() {
-        let res = av_bv::av_bv::btoa(param);
-        println!("{}", res)
-    } else {
-        let res = av_bv::av_bv::atob(&av.unwrap());
-        println!("{}", res)
-    }
+    let param = env::args().nth(1);
+    match param {
+        Some(param_str) => match param_str.parse::<u64>() {
+            Ok(av) => println!("{}", av_bv::atob(&av)),
+            _ => println!("{}", av_bv::btoa(&param_str).expect("Invalid BV provided.")),
+        },
+        None => println!("{}", "Please enter AV / BV."),
+    };
 }
